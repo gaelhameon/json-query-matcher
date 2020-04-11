@@ -5,15 +5,34 @@ function evaluateMatch(item, query) {
     const queryValue = query[queryKey];
     switch (queryKey) {
       case "$or":
-        if (!Array.isArray(queryValue)) throw new Error(`Value of a $or key should be an array. Got ${typeof queryValue}`);
-        return queryValue.some(orSubQuery => {
-          return evaluateMatch(item, orSubQuery);
-        });
-
+        return evaluateOr(item, queryValue);
       default:
-        const itemValue = _.get(item, queryKey);
-        return itemValue === queryValue;
+        switch (typeof queryValue) {
+          case `object`:
+            const querySubKeys = Object.keys(queryValue);
+            if (querySubKeys.length !== 1) throw new Error(`When the value of a query key is an object, it should have exactly one key.`);
+            const querySubKey = querySubKeys[0];
+            const querySubValue = queryValue[querySubKey];
+            switch (querySubKey) {
+              case "$or":
+                if (!Array.isArray(querySubValue)) throw new Error(`Value of a $or key should be an array. Got ${typeof querySubValue} ${querySubValue}`);
+                const orQueries = querySubValue.map(querySubSubValue => ({ [queryKey]: querySubSubValue }));
+                return evaluateOr(item, orQueries);
+              default:
+                throw new Error(`Not supported yet`);
+            }
+          default:
+            const itemValue = _.get(item, queryKey);
+            return itemValue === queryValue;
+        }
     }
+  });
+}
+
+function evaluateOr(item, orQueries) {
+  if (!Array.isArray(orQueries)) throw new Error(`Value of a $or key should be an array. Got ${typeof orQueries} ${orQueries}`);
+  return orQueries.some(orQuery => {
+    return evaluateMatch(item, orQuery);
   });
 }
 
