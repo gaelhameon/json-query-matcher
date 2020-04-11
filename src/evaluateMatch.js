@@ -3,7 +3,8 @@ const _ = require('lodash');
 function evaluateMatch(item, query) {
   return Object.keys(query).every(queryKey => {
     const queryValue = query[queryKey];
-    return item[queryKey] === queryValue;
+    const itemValue = _.get(item, queryKey);
+    return itemValue === queryValue;
   });
 }
 

@@ -22,7 +22,7 @@ describe('evaluateMatch', () => {
       expect(evaluateMatch(item, query)).to.equal(false);
     });
     it('returns false if the item has undefined keys not match the query', () => {
-      const item = {"key2": "toto"};
+      const item = { "key2": "toto" };
       expect(evaluateMatch(item, query)).to.equal(false);
     });
   });
@@ -45,7 +45,32 @@ describe('evaluateMatch', () => {
       expect(evaluateMatch(item, query)).to.equal(false);
     });
     it('returns false if the item has undefined keys not match the query', () => {
-      const item = {"key2": "toto"};
+      const item = { "key2": "toto" };
+      expect(evaluateMatch(item, query)).to.equal(false);
+    });
+  });
+  context('given a deep query object and a valid item', () => {
+    const query = { "firstTripPoint.trpptPlace": "SXR1", "lastTripPoint.trpptPlace": "SXR2" };
+    it('returns true if the item matches the query', () => {
+      const item = {
+        firstTripPoint: {
+          trpptPlace: "SXR1",
+        },
+        lastTripPoint: {
+          trpptPlace: "SXR2"
+        }
+      };
+      expect(evaluateMatch(item, query)).to.equal(true);
+    });
+    it('returns false if the item does not match the query', () => {
+      const item = {
+        firstTripPoint: {
+          trpptPlace: "NAF1",
+        },
+        lastTripPoint: {
+          trpptPlace: "NAF2"
+        }
+      };
       expect(evaluateMatch(item, query)).to.equal(false);
     });
   });
