@@ -19,6 +19,9 @@ function evaluateMatch(item, query) {
                   if (!Array.isArray(querySubValue)) throw new Error(`Value of a $or key should be an array. Got ${typeof querySubValue} ${querySubValue}`);
                   const orQueries = querySubValue.map(querySubSubValue => ({ [queryKey]: querySubSubValue }));
                   return evaluateOr(item, orQueries);
+                case "$ne":
+                  if (typeof querySubValue === 'object') throw new Error(`Only plain values should be used with $ne`);
+                  return evaluateField(item, queryKey, querySubValue, "$ne");
                 default:
                   throw new Error(`Not supported yet`);
               }
@@ -28,11 +31,22 @@ function evaluateMatch(item, query) {
               return evaluateMatch(itemValue, queryValue);
             }
           default:
-            const itemValue = _.get(item, queryKey);
-            return itemValue === queryValue;
+            return evaluateField(item, queryKey, queryValue, "$eq");
         }
     }
   });
+}
+
+function evaluateField(item, field, queryValue, operator = "$eq") {
+  const itemValue = _.get(item, field);
+  switch (operator) {
+    case "$eq":
+      return itemValue === queryValue;
+    case "$ne":
+      return itemValue !== queryValue
+    default:
+      throw new Error(`Unknown operator ${operator}`);
+  }
 }
 
 function evaluateOr(item, orQueries) {

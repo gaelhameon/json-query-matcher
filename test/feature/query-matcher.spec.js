@@ -75,6 +75,67 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item, query)).to.equal(false);
       });
     });
+    context('given a query object with a $ne and a valid item', () => {
+      const query = { "firstTripPoint.trpptPlace": { $ne: "SXR1" } };
+      it('returns true if the item matches the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+          }
+        };
+        const item2 = {
+          firstTripPoint: {}
+        };
+        const item3 = {}
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item3, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item = {
+          firstTripPoint: {
+            trpptPlace: "SXR1",
+          }
+        };
+        expect(evaluateMatch(item, query)).to.equal(false);
+      });
+    });
+    context('given a query object with a $ne and other fields and a valid item', () => {
+      const query = {
+        "firstTripPoint.trpptPlace": { $ne: "SXR1" },
+        "firstTripPoint.trpptNoStopping": "1",
+      };
+      it('returns true if the item matches the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+            trpptNoStopping: "1",
+          }
+        };
+        const item2 = {
+          firstTripPoint: { trpptNoStopping: "1" }
+        };
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR1",
+          }
+        };
+        const item2 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+            trpptNoStopping: "0",
+          }
+        };
+        const item3 = {}
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item3, query)).to.equal(false);
+      });
+    });
     context('given a query object with $or at the root and a valid item', () => {
       const query = { "$or": [{ "firstTripPoint.trpptPlace": "SXR1" }, { "lastTripPoint.trpptPlace": "SXR2" }] };
       it('returns true if the item matches the query', () => {
