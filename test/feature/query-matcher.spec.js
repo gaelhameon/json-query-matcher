@@ -74,12 +74,23 @@ describe('evaluateMatch', () => {
       expect(evaluateMatch(item, query)).to.equal(false);
     });
   });
-  context.skip('given a valid query object a valid item', () => {
+  context('given a query object with $or and a valid item', () => {
     const query = { "$or": [{ "firstTripPoint.trpptPlace": "SXR1" }, { "lastTripPoint.trpptPlace": "SXR2" }] };
     it('returns true if the item matches the query', () => {
       const item = {
         firstTripPoint: {
           trpptPlace: "SXR1",
+        },
+        lastTripPoint: {
+          trpptPlace: "NAF1"
+        }
+      };
+      expect(evaluateMatch(item, query)).to.equal(true);
+    });
+    it('returns true if the item matches the query', () => {
+      const item = {
+        firstTripPoint: {
+          trpptPlace: "NAF2",
         },
         lastTripPoint: {
           trpptPlace: "SXR2"
@@ -90,10 +101,10 @@ describe('evaluateMatch', () => {
     it('returns false if the item does not match the query', () => {
       const item = {
         firstTripPoint: {
-          trpptPlace: "NAF1",
+          trpptPlace: "CJV1",
         },
         lastTripPoint: {
-          trpptPlace: "NAF2"
+          trpptPlace: "NAF1C"
         }
       };
       expect(evaluateMatch(item, query)).to.equal(false);
