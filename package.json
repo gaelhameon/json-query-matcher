@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive --file test/setup-logger.js test/**/*.spec.js",
-    "coverage": "nyc --reporter=html --reporter=text npm test"
+    "test:feature": "mocha --recursive --file test/setup-logger.js test/feature/**/*.spec.js",
+    "test:unit": "mocha --recursive --file test/setup-logger.js test/unit/**/*.spec.js",
+    "coverage": "nyc --reporter=html --reporter=text npm test",
+    "coverage:feature": "nyc --reporter=html --reporter=text npm run test:feature",
+    "coverage:unit": "nyc --reporter=html --reporter=text npm run test:unit"
   },
   "repository": {
     "type": "git",
