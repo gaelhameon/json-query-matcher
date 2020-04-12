@@ -29,22 +29,25 @@ function evaluateMatch(item, query) {
     case `object`:
       const queryKeys = Object.keys(query);
       logger.trace(`Query is an object with the following keys: ${queryKeys}`);
-      if (queryKeys.some(querySubKey => querySubKey[0] === "$")) {
-        if (queryKeys.length > 1) throw new Error(`Only one key is supported if there is a $ key in an object.`);
-        const queryKey = queryKeys[0];
+      return queryKeys.every(queryKey => {
         const queryValue = query[queryKey];
+        logger.trace(`Evaluating key ${queryKey} with value: ${queryValue}`);
+
         const compareValuesFunction = compareValuesFunctionByComparisonOperator[queryKey];
-        if (compareValuesFunction) return compareValuesFunction(item, queryValue, queryKey);
+        if (compareValuesFunction) {
+          logger.trace(`Comparison operator ${queryKey} detected. Will use function ${compareValuesFunction.name}`);
+          return compareValuesFunction(item, queryValue, queryKey);
+        }
 
         const logicalEvaluationFunction = logicalEvaluationFunctionByLogicalOperator[queryKey];
-        if (logicalEvaluationFunction) return logicalEvaluationFunction(item, queryValue);
+        if (logicalEvaluationFunction) {
+          logger.trace(`Logical operator ${queryKey} detected. Will use function ${logicalEvaluationFunction.name}`);
+          return logicalEvaluationFunction(item, queryValue);
+        }
 
-        throw new Error(`The ${queryKey} query key is not supported yet.`);
-      }
-      else {
-        logger.trace(`No $ in query. Evaluating match`);
-        return queryKeys.every(queryKey => evaluateMatch(getItemValue(item, queryKey), query[queryKey]));
-      }
+        logger.trace(`No operator detected. Will evaluate match.`);
+        return evaluateMatch(getItemValue(item, queryKey), query[queryKey])
+      });
     default:
       return compareValues(item, query, "$eq");
   }
