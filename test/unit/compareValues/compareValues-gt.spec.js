@@ -88,10 +88,12 @@ describe('compareValues - $gt operator', () => {
     });
   });
   context(`with values of different types`, () => {
-    it(`compares the result of "valueOf" on both values`, () => {
+    it(`does what it wants ...`, () => {
       expect(compareValues("1", 1, "$gt")).to.be.false;
+      expect(compareValues(1, "1", "$gt")).to.be.false;
 
       expect(compareValues("true", true, "$gt")).to.be.false;
+      expect(compareValues(true, "true", "$gt")).to.be.false;
 
       expect(compareValues("", null, "$gt")).to.be.false;
       expect(compareValues(null, "", "$gt")).to.be.false;
@@ -107,6 +109,7 @@ describe('compareValues - $gt operator', () => {
       expect(compareValues(false, "", "$gt")).to.be.false;
 
       expect(compareValues(85, "75", "$gt")).to.be.true;
+      expect(compareValues(65, "75", "$gt")).to.be.false;
     });
   });
 });
