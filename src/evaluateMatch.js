@@ -1,6 +1,6 @@
 const log4js = require('@log4js-node/log4js-api');
 const logger = log4js.getLogger('json-query-matcher.evaluateMatch');
- 
+
 // since there are circular dependencies, the export has to be first
 module.exports = evaluateMatch;
 
@@ -22,8 +22,6 @@ function evaluateMatch(item, query) {
         const queryValue = query[queryKey];
         switch (queryKey) {
           case "$or":
-            if (!Array.isArray(queryValue)) throw new Error(`Value of a $or key should be an array. Got ${typeof queryValue} ${queryValue}`);
-            // const orQueries = queryValue.map(querySubSubValue => ({ [queryKey]: querySubSubValue }));
             return evaluateOr(item, queryValue);
           case "$ne":
             if (typeof queryValue === 'object') throw new Error(`Only plain values should be used with $ne`);
@@ -34,15 +32,7 @@ function evaluateMatch(item, query) {
       }
       else {
         logger.trace(`No $ in query. Evaluating match`);
-        return queryKeys.every(queryKey => {
-          const queryValue = query[queryKey];
-          switch (queryKey) {
-            case "$or":
-              return evaluateOr(item, queryValue);
-            default:
-              return evaluateMatch(getItemValue(item, queryKey), queryValue);
-          }
-        });
+        return queryKeys.every(queryKey => evaluateMatch(getItemValue(item, queryKey), query[queryKey]));
       }
     default:
       return compareValues(item, query, "$eq");
