@@ -261,6 +261,100 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item2, query)).to.equal(false);
       });
     });
+    context('given a query object with multiple nested ors and some $gt/$lt and a valid item', () => {
+      const query = {
+        $or: [
+          { "firstTripPoint.trpptPlace": { "$or": ["SXR1", "SXR2"] } },
+          {
+            "lastTripPoint": {
+              $or: [
+                { trpptPlace: "NAF2", trpptNoStopping: "1", trpptRank: { $gt: 3 } },
+                { trpptPlace: "NAF1", trpptNoStopping: "0", trpptRank: { $lte: 5 } },
+              ]
+            }
+          }
+        ]
+      };
+      it('returns true if the item matches the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR1",
+          },
+        };
+        const item2 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+          },
+        };
+        const item3 = {
+          lastTripPoint: {
+            trpptPlace: "NAF2",
+            trpptNoStopping: "1",
+            trpptRank: 4
+          },
+        };
+        const item4 = {
+          lastTripPoint: {
+            trpptPlace: "NAF1",
+            trpptNoStopping: "0",
+            trpptRank: 5
+          },
+        };
+        const item5 = {
+          lastTripPoint: {
+            trpptPlace: "NAF1",
+            trpptNoStopping: "0",
+            trpptRank: 2
+          },
+        };
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item3, query)).to.equal(true);
+        expect(evaluateMatch(item4, query)).to.equal(true);
+        expect(evaluateMatch(item5, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "CJV1",
+          },
+          lastTripPoint: {
+            trpptPlace: "NAF1C"
+          }
+        };
+        const item2 = {
+          lastTripPoint: {
+            trpptPlace: "NAF1",
+            trpptNoStopping: "1"
+          },
+        };
+        const item3 = {
+          lastTripPoint: {
+            trpptPlace: "NAF2",
+            trpptNoStopping: "1",
+            trpptRank: 3
+          },
+        };
+        const item4 = {
+          lastTripPoint: {
+            trpptPlace: "NAF1",
+            trpptNoStopping: "0",
+            trpptRank: 6
+          },
+        };
+        const item5 = {
+          lastTripPoint: {
+            trpptPlace: "NAF1",
+            trpptNoStopping: "0",
+          },
+        };
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item3, query)).to.equal(false);
+        expect(evaluateMatch(item4, query)).to.equal(false);
+        expect(evaluateMatch(item5, query)).to.equal(false);
+      });
+    });
   });
   context('given an invalid query object', () => {
     it('throws (bad root $or)', () => {
@@ -273,10 +367,6 @@ describe('evaluateMatch', () => {
     });
     it('throws (unspported query)', () => {
       const query = { key1: { $crazyFunction: "value2" } };
-      expect(() => evaluateMatch({}, query)).to.throw();
-    });
-    it('throws (bad value $ne)', () => {
-      const query = { key1: { $ne: { toto: "titi" } } };
       expect(() => evaluateMatch({}, query)).to.throw();
     });
     it('throws (bad multiple $keys)', () => {

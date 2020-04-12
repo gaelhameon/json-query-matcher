@@ -8,6 +8,19 @@ const compareValues = require('./compareValues');
 const getItemValue = require('./getItemValue');
 const evaluateOr = require('./evaluateOr');
 
+const compareValuesFunctionByComparisonOperator = {
+  $eq: compareValues,
+  $ne: compareValues,
+  $gt: compareValues,
+  $gte: compareValues,
+  $lt: compareValues,
+  $lte: compareValues
+};
+
+const logicalEvaluationFunctionByLogicalOperator = {
+  $or: evaluateOr,
+};
+
 function evaluateMatch(item, query) {
   logger.trace(`item: ${JSON.stringify(item)}`);
   logger.trace(`query: ${JSON.stringify(query)}`);
@@ -20,15 +33,13 @@ function evaluateMatch(item, query) {
         if (queryKeys.length > 1) throw new Error(`Only one key is supported if there is a $ key in an object.`);
         const queryKey = queryKeys[0];
         const queryValue = query[queryKey];
-        switch (queryKey) {
-          case "$or":
-            return evaluateOr(item, queryValue);
-          case "$ne":
-            if (typeof queryValue === 'object') throw new Error(`Only plain values should be used with $ne`);
-            return compareValues(item, queryValue, "$ne");
-          default:
-            throw new Error(`Not supported yet`);
-        }
+        const compareValuesFunction = compareValuesFunctionByComparisonOperator[queryKey];
+        if (compareValuesFunction) return compareValuesFunction(item, queryValue, queryKey);
+
+        const logicalEvaluationFunction = logicalEvaluationFunctionByLogicalOperator[queryKey];
+        if (logicalEvaluationFunction) return logicalEvaluationFunction(item, queryValue);
+
+        throw new Error(`The ${queryKey} query key is not supported yet.`);
       }
       else {
         logger.trace(`No $ in query. Evaluating match`);
