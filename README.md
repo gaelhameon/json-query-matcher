@@ -1,9 +1,9 @@
-# ookpik-query-matcher
+# json-query-matcher
 Evaluates a mongodb-style query
 
 ## Why?
 
-I'm working on a transit-data related app where I often have an array of objects in memory and I want to perform some operations on a subset of this array.
+I'm working on an app in which I often have an array of objects in memory and I want to perform some operations on a subset of this array.
 
 The criteria used to select this subset can vary greatly depending on the use case, and I want to let the users specify these criteria in a config file that will be loaded and evaluated at runtime.
 
@@ -14,13 +14,12 @@ I chose to have the user specify their criteria in a JSON object very strongly i
 And now I'm writing this library to evaluate an object againts these criteria. (I assume MongoDB has one and it would be nice to reuse it, but I had a quick look at the codebase and couldn't find it and saw that it was mostly C++ and figured it would be fun to write this myself.)
 
 ## Installation
-
-    npm install --save ookpik-query-matcher
+    npm install --save json-query-matcher
 
 ## Usage
 
 ```javascript
-const { evaluateMatch } = require('ookpik-query-matcher');
+const { evaluateMatch } = require('json-query-matcher');
 
 const items = [
     { firstName: "Gaël", lastName: "Haméon" },

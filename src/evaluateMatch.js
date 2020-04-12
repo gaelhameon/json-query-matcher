@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 // since there are circular dependencies, the export has to be first
 module.exports = evaluateMatch;
 

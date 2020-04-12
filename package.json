@@ -1,11 +1,11 @@
 {
-  "name": "ookpik-query-matcher",
+  "name": "json-query-matcher",
   "version": "1.0.0",
   "description": "Evaluates mongo-db style queries",
   "main": "index.js",
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha --recursive test/**/*.spec.js",
-    "coverage": "nyc npm run test"
+    "test": "mocha --recursive test/**/*.spec.js",
+    "coverage": "nyc --reporter=html --reporter=text npm test"
   },
   "repository": {
     "type": "git",
