@@ -5,6 +5,7 @@ const logger = log4js.getLogger('json-query-matcher.evaluateMatch');
 module.exports = evaluateMatch;
 
 const compareValues = require('./compareValues');
+const evaluateInOrNin = require('./evaluateInOrNin');
 const getItemValue = require('./getItemValue');
 const evaluateOr = require('./evaluateOr');
 
@@ -14,7 +15,9 @@ const compareValuesFunctionByComparisonOperator = {
   $gt: compareValues,
   $gte: compareValues,
   $lt: compareValues,
-  $lte: compareValues
+  $lte: compareValues,
+  $in: evaluateInOrNin,
+  $nin: evaluateInOrNin,
 };
 
 const logicalEvaluationFunctionByLogicalOperator = {
