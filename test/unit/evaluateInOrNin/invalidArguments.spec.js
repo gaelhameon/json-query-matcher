@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const evaluateInOrNin = require('../../../src/evaluateInOrNin');
+const evaluateInOrNin = require('../../../src/comparisonFunctions/evaluateInOrNin');
 
 describe('evaluateInOrNin - invalid args', () => {
   it(`throws if queryValues is not an array`, () => {

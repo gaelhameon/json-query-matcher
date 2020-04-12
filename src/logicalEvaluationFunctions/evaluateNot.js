@@ -1,7 +1,7 @@
 const log4js = require('@log4js-node/log4js-api');
 const logger = log4js.getLogger('json-query-matcher.evaluateNot');
 
-const evaluateMatch = require('./evaluateMatch');
+const evaluateMatch = require('../evaluateMatch');
 
 function evaluateNot(item, query) {
     logger.trace(`item: ${JSON.stringify(item)}`);

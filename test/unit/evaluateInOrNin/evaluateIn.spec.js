@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const evaluateInOrNin = require('../../../src/evaluateInOrNin');
+const evaluateInOrNin = require('../../../src/comparisonFunctions/evaluateInOrNin');
 
 describe('evaluateInOrNin - $in operator', () => {
   it(`returns true if item value is included in query values`, () => {

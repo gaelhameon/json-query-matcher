@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const compareValues = require('../../../src/compareValues');
+const compareValues = require('../../../src/comparisonFunctions/compareValues');
 
 describe('compareValues - $ne operator', () => {
   context(`with two values of the same type`, () => {
