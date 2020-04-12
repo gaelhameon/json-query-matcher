@@ -1,19 +1,8 @@
-const log4js = require('log4js');
-log4js.configure({
-  appenders: {
-    out: { type: 'stdout' },
-  },
-  categories: {
-    default: { appenders: ['out'], level: 'trace' }
-  }
-});
-
 const { expect } = require('chai');
-
 
 const { evaluateMatch } = require('../../index');
 
-describe.only('readmeExamples', () => {
+describe('readmeExamples', () => {
   it(`works!`, () => {
     // const { evaluateMatch } = require('ookpik-query-matcher');
 

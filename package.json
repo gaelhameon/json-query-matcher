@@ -4,7 +4,7 @@
   "description": "Evaluates mongo-db style queries",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive test/**/*.spec.js",
+    "test": "mocha --recursive --file test/setup-logger.js test/**/*.spec.js",
     "coverage": "nyc --reporter=html --reporter=text npm test"
   },
   "repository": {
