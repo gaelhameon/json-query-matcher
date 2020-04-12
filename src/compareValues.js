@@ -13,6 +13,12 @@ function compareValues(itemValue, queryValue, operator = "$eq") {
             return itemValue !== queryValue;
         case "$gt":
             return itemValue > queryValue;
+        case "$gte":
+            return itemValue >= queryValue;
+        case "$lte":
+            return itemValue <= queryValue;
+        case "$lt":
+            return itemValue < queryValue;
         default:
             throw new Error(`Unknown operator ${operator}`);
     }
