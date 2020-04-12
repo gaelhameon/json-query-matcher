@@ -1,9 +1,10 @@
 const _ = require('lodash');
 
 // since there are circular dependencies, the export has to be first
-module.exports =  evaluateMatch;
+module.exports = evaluateMatch;
 
-const evaluateField = require('./evaluateField');
+const compareValues = require('./compareValues');
+const getItemValue = require('./getItemValue');
 const evaluateOr = require('./evaluateOr');
 
 function evaluateMatch(item, query) {
@@ -27,17 +28,16 @@ function evaluateMatch(item, query) {
                   return evaluateOr(item, orQueries);
                 case "$ne":
                   if (typeof querySubValue === 'object') throw new Error(`Only plain values should be used with $ne`);
-                  return evaluateField(item, queryKey, querySubValue, "$ne");
+                  return compareValues(getItemValue(item, queryKey), querySubValue, "$ne");
                 default:
                   throw new Error(`Not supported yet`);
               }
             }
             else {
-              const itemValue = _.get(item, queryKey);
-              return evaluateMatch(itemValue, queryValue);
+              return evaluateMatch(getItemValue(item, queryKey), queryValue);
             }
           default:
-            return evaluateField(item, queryKey, queryValue, "$eq");
+            return compareValues(getItemValue(item, queryKey), queryValue, "$eq");
         }
     }
   });
