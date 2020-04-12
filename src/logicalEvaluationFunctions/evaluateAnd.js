@@ -1,7 +1,7 @@
 const log4js = require('@log4js-node/log4js-api');
 const logger = log4js.getLogger('json-query-matcher.evaluateAnd');
 
-const evaluateMatch = require('../evaluateMatch');
+const evaluateMatch = require('../recursiveEvaluateMatch');
 
 function evaluateAnd(item, andQueries) {
     logger.trace(`item: ${JSON.stringify(item)}`);

@@ -1,7 +1,7 @@
 const log4js = require('@log4js-node/log4js-api');
 const logger = log4js.getLogger('json-query-matcher.evaluateOr');
 
-const evaluateMatch = require('../evaluateMatch');
+const evaluateMatch = require('../recursiveEvaluateMatch');
 
 function evaluateNor(item, norQueries) {
     logger.trace(`item: ${JSON.stringify(item)}`);
