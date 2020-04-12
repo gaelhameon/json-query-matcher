@@ -9,6 +9,7 @@ const evaluateInOrNin = require('./evaluateInOrNin');
 const getItemValue = require('./getItemValue');
 const evaluateOr = require('./evaluateOr');
 const evaluateAnd = require('./evaluateAnd');
+const evaluateNot = require('./evaluateNot');
 
 const compareValuesFunctionByComparisonOperator = {
   $eq: compareValues,
@@ -24,6 +25,7 @@ const compareValuesFunctionByComparisonOperator = {
 const logicalEvaluationFunctionByLogicalOperator = {
   $or: evaluateOr,
   $and: evaluateAnd,
+  $not: evaluateNot,
 };
 
 function evaluateMatch(item, query) {

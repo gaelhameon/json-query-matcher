@@ -524,6 +524,25 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item2, query)).to.equal(true);
       });
     });
+    context('given a query object with $not, and a valid item', () => {
+      const query = {
+        "trpDistance": { "$not": { $gt: 300 } },
+      };
+      it('returns true if item matches the query', () => {
+        const item1 = {
+          trpDistance: 200
+        };
+        const item2 = {};
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          trpDistance: 400
+        };
+        expect(evaluateMatch(item1, query)).to.equal(false);
+      });
+    });
   });
   context('given an invalid query object', () => {
     it('throws (or should have array)', () => {
@@ -539,7 +558,7 @@ describe('evaluateMatch', () => {
       expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
     });
     it('throws ($in should be array)', () => {
-      const query = {key1: {$in: "tata"}};
+      const query = { key1: { $in: "tata" } };
       expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
     });
   });
