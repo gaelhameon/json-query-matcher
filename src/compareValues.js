@@ -10,7 +10,9 @@ function compareValues(itemValue, queryValue, operator = "$eq") {
         case "$eq":
             return itemValue === queryValue;
         case "$ne":
-            return itemValue !== queryValue
+            return itemValue !== queryValue;
+        case "$gt":
+            return itemValue > queryValue;
         default:
             throw new Error(`Unknown operator ${operator}`);
     }
