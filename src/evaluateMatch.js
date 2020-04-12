@@ -8,6 +8,7 @@ const compareValues = require('./compareValues');
 const evaluateInOrNin = require('./evaluateInOrNin');
 const getItemValue = require('./getItemValue');
 const evaluateOr = require('./evaluateOr');
+const evaluateAnd = require('./evaluateAnd');
 
 const compareValuesFunctionByComparisonOperator = {
   $eq: compareValues,
@@ -22,6 +23,7 @@ const compareValuesFunctionByComparisonOperator = {
 
 const logicalEvaluationFunctionByLogicalOperator = {
   $or: evaluateOr,
+  $and: evaluateAnd,
 };
 
 function evaluateMatch(item, query) {
@@ -31,6 +33,7 @@ function evaluateMatch(item, query) {
   switch (typeof query) {
     case `object`:
       const queryKeys = Object.keys(query);
+      if (queryKeys.length === 0) throw new Error (`Query should have at least one key`);
       logger.trace(`Query is an object with the following keys: ${queryKeys}`);
       return queryKeys.every(queryKey => {
         const queryValue = query[queryKey];

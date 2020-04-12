@@ -355,6 +355,48 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item5, query)).to.equal(false);
       });
     });
+    context('given a query object with some $and and some $gt/$lt and a valid item', () => {
+      const query = {
+        $and: [
+          { $or: [{ trpNumber: `123456` }, { trpNumber: `234567` }] },
+          { $or: [{ trpDistance: { $lt: 400 } }, { trpNumberOfPoints: { "$gte": 5 } }] }
+        ]
+      };
+      it('returns true if the item matches the query', () => {
+        const item1 = {
+          trpNumber: '123456',
+          trpDistance: 500,
+          trpNumberOfPoints: 6
+        };
+        const item2 = {
+          trpNumber: '234567',
+          trpDistance: 300,
+          trpNumberOfPoints: 2
+        };
+        const item3 = {
+          trpNumber: '234567',
+          trpDistance: 300,
+          trpNumberOfPoints: 8
+        };
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item3, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          trpNumber: '123457',
+          trpDistance: 500,
+          trpNumberOfPoints: 6
+        };
+        const item2 = {
+          trpNumber: '234567',
+          trpDistance: 500,
+          trpNumberOfPoints: 2
+        };
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+      });
+    });
     context('given a query object with a normal key and a or on the same level, and a valid item', () => {
       const query = {
         "firstTripPoint.trpptPlace": { "$or": ["SXR1", "SXR2"] },
@@ -424,10 +466,80 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item3, query)).to.equal(false);
       });
     });
+    context('given a query object with $in, and a valid item', () => {
+      const query = {
+        "firstTripPoint.trpptPlace": { "$in": ["SXR1", "SXR2"] },
+      };
+      it('returns true if item matches the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR1",
+          }
+        };
+        const item2 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+          }
+        };
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR3",
+          }
+        };
+        const item2 = {};
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+      });
+    });
+    context('given a query object with $nin, and a valid item', () => {
+      const query = {
+        "firstTripPoint.trpptPlace": { "$nin": ["SXR1", "SXR2"] },
+      };
+      it('returns false if item  does not match the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR1",
+          }
+        };
+        const item2 = {
+          firstTripPoint: {
+            trpptPlace: "SXR2",
+          }
+        };
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+      });
+      it('returns true if the item matches the query', () => {
+        const item1 = {
+          firstTripPoint: {
+            trpptPlace: "SXR3",
+          }
+        };
+        const item2 = {};
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+      });
+    });
   });
   context('given an invalid query object', () => {
     it('throws (or should have array)', () => {
       const query = { "$or": "value1" };
+      expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
+    });
+    it('throws (and should have array)', () => {
+      const query = { "$and": "value1" };
+      expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
+    });
+    it('throws (query shouldnt be empty object)', () => {
+      const query = {};
+      expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
+    });
+    it('throws ($in should be array)', () => {
+      const query = {key1: {$in: "tata"}};
       expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
     });
   });
