@@ -4,7 +4,8 @@
   "description": "Evaluates mongo-db style queries",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive test/**/*.spec.js"
+    "test": "nyc --reporter=html --reporter=text mocha --recursive test/**/*.spec.js",
+    "coverage": "nyc npm run test"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,8 @@
   "homepage": "https://github.com/gaelhameon/ookpik-query-matcher#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1"
   },
   "dependencies": {
     "lodash": "^4.17.15"

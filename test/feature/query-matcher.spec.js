@@ -275,6 +275,14 @@ describe('evaluateMatch', () => {
       const query = { key1: { $crazyFunction: "value2" } };
       expect(() => evaluateMatch({}, query)).to.throw();
     });
+    it('throws (bad value $ne)', () => {
+      const query = { key1: { $ne: { toto: "titi" } } };
+      expect(() => evaluateMatch({}, query)).to.throw();
+    });
+    it('throws (bad multiple $keys)', () => {
+      const query = { key1: { $ne: { toto: "titi" }, $or: { titi: "tata" } } };
+      expect(() => evaluateMatch({}, query)).to.throw();
+    });
   });
 });
 
