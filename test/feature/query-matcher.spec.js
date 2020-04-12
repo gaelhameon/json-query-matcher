@@ -543,6 +543,46 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item1, query)).to.equal(false);
       });
     });
+    context('given a query object with $nor, and a valid item', () => {
+      const query = {
+        $nor: [
+          { trpNumber: '123456' },
+          { trpType: '0' }
+        ]
+      };
+      it('returns true if item matches the query', () => {
+        const item1 = {
+          trpNumber: `234567`,
+          trpType: "1"
+        };
+        const item2 = {
+          trpType: "1"
+        };
+        const item3 = {
+          trpNumber: `234567`,
+        };
+        const item4 = {};
+        expect(evaluateMatch(item1, query)).to.equal(true);
+        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item3, query)).to.equal(true);
+        expect(evaluateMatch(item4, query)).to.equal(true);
+      });
+      it('returns false if the item does not match the query', () => {
+        const item1 = {
+          trpNumber: `123456`
+        };
+        const item2 = {
+          trpType: `0`
+        };
+        const item3 = {
+          trpNumber: `123456`,
+          trpType: `0`
+        };
+        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item3, query)).to.equal(false);
+      });
+    });
   });
   context('given an invalid query object', () => {
     it('throws (or should have array)', () => {
@@ -551,6 +591,10 @@ describe('evaluateMatch', () => {
     });
     it('throws (and should have array)', () => {
       const query = { "$and": "value1" };
+      expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
+    });
+    it('throws (nor should have array)', () => {
+      const query = { "$nor": "value1" };
       expect(() => evaluateMatch({ key1: "tata" }, query)).to.throw();
     });
     it('throws (query shouldnt be empty object)', () => {
