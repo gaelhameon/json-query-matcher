@@ -1,5 +1,11 @@
 const _ = require('lodash');
 
+// since there are circular dependencies, the export has to be first
+module.exports =  evaluateMatch;
+
+const evaluateField = require('./evaluateField');
+const evaluateOr = require('./evaluateOr');
+
 function evaluateMatch(item, query) {
   return Object.keys(query).every(queryKey => {
     const queryValue = query[queryKey];
@@ -36,24 +42,3 @@ function evaluateMatch(item, query) {
     }
   });
 }
-
-function evaluateField(item, field, queryValue, operator = "$eq") {
-  const itemValue = _.get(item, field);
-  switch (operator) {
-    case "$eq":
-      return itemValue === queryValue;
-    case "$ne":
-      return itemValue !== queryValue
-    default:
-      throw new Error(`Unknown operator ${operator}`);
-  }
-}
-
-function evaluateOr(item, orQueries) {
-  if (!Array.isArray(orQueries)) throw new Error(`Value of a $or key should be an array. Got ${typeof orQueries} ${orQueries}`);
-  return orQueries.some(orQuery => {
-    return evaluateMatch(item, orQuery);
-  });
-}
-
-module.exports = evaluateMatch;
