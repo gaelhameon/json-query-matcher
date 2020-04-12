@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const { evaluateMatch } = require('../../index');
 
 describe('readmeExamples', () => {
-  it(`works!`, () => {
+  it(`Usage examples work`, () => {
     // const { evaluateMatch } = require('ookpik-query-matcher');
 
     const items = [
@@ -33,6 +33,35 @@ describe('readmeExamples', () => {
     query = { "firstName": { "$ne": "Gaël" } };
     result = items.filter(item => evaluateMatch(item, query));
     expect(result).to.eql([{ firstName: "Alix", lastName: "Haméon" }]);
+  });
+  it(`Dot notation examples work`, () => {
+    const item = {
+      "trip": {
+        "trpNumber": "123456",
+        "trpType": "1",
+        "tripPoints": [
+          {
+            "trpptPlace": {
+              "code": "CJV",
+              "name": "Cergy-le-Haut"
+            },
+            "trpptArrivalTime": "09:35:15",
+            "trpptDepartureTime": "09:35:50"
+          },
+          {
+            "trpptPlace": {
+              "code": "CJP",
+              "name": "Cergy-Préfecture"
+            },
+            "trpptArrivalTime": "09:40:00",
+            "trpptDepartureTime": "09:40:50"
+          }
+        ]
+      },
+      "block": {}
+    };
+    const query = { "trip.tripPoints.1.trpptPlace.name": `Cergy-Préfecture` };
+    expect(evaluateMatch(item, query)).to.be.true;
   });
 });
 

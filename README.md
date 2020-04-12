@@ -3,15 +3,13 @@ Evaluates a mongodb-style query
 
 ## Why?
 
-I'm working on an app in which I often have an array of objects in memory and I want to perform some operations on a subset of this array.
+I'm working on an app in which I often have arrays of objects in memory and I want to perform some operations on a subset of these arrays.
 
 The criteria used to select this subset can vary greatly depending on the use case, and I want to let the users specify these criteria in a config file that will be loaded and evaluated at runtime.
 
-An easy and flexible way would be to let the user write an Array.filter callback function and evaluate it at runtime, but that's not very safe.
-
 I chose to have the user specify their criteria in a JSON object very strongly inspired by the syntax used to build queries in MongoDB: https://docs.mongodb.com/manual/tutorial/query-documents/
 
-And now I'm writing this library to evaluate an object againts these criteria. (I assume MongoDB has one and it would be nice to reuse it, but I had a quick look at the codebase and couldn't find it and saw that it was mostly C++ and figured it would be fun to write this myself.)
+And now I'm writing this library to evaluate an object againts these criteria.
 
 ## Installation
     npm install --save json-query-matcher
@@ -51,5 +49,60 @@ result = items.filter(item => evaluateMatch(item, query));
 ```
 
 ## Features
-TBC:
-- Use lodash paths (not exactly the same notation as mongo) to access deep props of the items
+### Operators
+
+#### Comparison operators
+These 8 comparison operators are available and are meant to behave the [same way as in MongoDB](https://docs.mongodb.com/manual/reference/operator/query-comparison/)
+  - `$eq`: equal
+  - `$ne`: not equal
+  - `$gt`: greater than
+  - `$gte`: greater than or equal
+  - `$lt`: lower than
+  - `$lte`: lower than or equal
+  - `$in`: in
+  - `$nin`: not in
+
+#### Logical operators
+These 4 logical operators are available and are meant to behave the [same way as in MongoDB](https://docs.mongodb.com/manual/reference/operator/query-logical/)
+- `$or`
+- `$and` 
+- `$nor` 
+- `$not` 
+
+#### Other operators
+I plan on adding operators as I need them. Up next are probably the [array operators](https://docs.mongodb.com/manual/reference/operator/query-array/)
+
+### Dot notation
+[Like in MongoDB](https://docs.mongodb.com/manual/core/document/#dot-notation), you can use the dot notation to access deeper properties in an object.
+
+If we have the object below:
+
+```json
+{
+    "trip": {
+        "trpNumber": "123456",
+        "trpType": "1",
+        "tripPoints": [
+            {
+                "trpptPlace": {
+                    "code": "CJV",
+                    "name": "Cergy-le-Haut"
+                },
+                "trpptArrivalTime": "09:35:15",
+                "trpptDepartureTime": "09:35:50"
+            },
+            {
+                "trpptPlace": {
+                    "code": "CJP",
+                    "name": "Cergy-Préfecture"
+                },
+                "trpptArrivalTime": "09:40:00",
+                "trpptDepartureTime": "09:40:50"
+            }
+        ]
+    },
+    "block": {}
+}
+
+```
+You can write `trip.tripPoints.1.trpptPlace.name` to get to "Cergy-Préfecture".
