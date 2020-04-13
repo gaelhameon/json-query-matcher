@@ -57,8 +57,8 @@ These 8 comparison operators are available and are meant to behave the [same way
   - `$ne`: not equal
   - `$gt`: greater than
   - `$gte`: greater than or equal
-  - `$lt`: lower than
-  - `$lte`: lower than or equal
+  - `$lt`: less than
+  - `$lte`: less than or equal
   - `$in`: in
   - `$nin`: not in
 
