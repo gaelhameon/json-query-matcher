@@ -13,19 +13,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gaelhameon/ookpik-query-matcher.git"
+    "url": "git+https://github.com/gaelhameon/json-query-matcher.git"
   },
   "keywords": [
     "mongodb",
     "query",
-    "match"
+    "matcher",
+    "json"
   ],
   "author": "Gaël Haméon",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gaelhameon/ookpik-query-matcher/issues"
+    "url": "https://github.com/gaelhameon/json-query-matcher/issues"
   },
-  "homepage": "https://github.com/gaelhameon/ookpik-query-matcher#readme",
+  "homepage": "https://github.com/gaelhameon/json-query-matcher#readme",
   "devDependencies": {
     "chai": "^4.2.0",
     "log4js": "^6.1.2",
