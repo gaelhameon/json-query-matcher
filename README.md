@@ -5,9 +5,9 @@ Evaluates a mongodb-style query
 
 I'm working on an app in which I often have arrays of objects in memory and I want to perform some operations on a subset of these arrays.
 
-The criteria used to select this subset can vary greatly depending on the use case, and I want to let the users specify these criteria in a config file that will be loaded and evaluated at runtime.
+The criteria used to select these subsets can vary greatly depending on the use cases, and I want to let the users specify these criteria in a config file that will be loaded and evaluated at runtime.
 
-I chose to have the user specify their criteria in a JSON object very strongly inspired by the syntax used to build queries in MongoDB: https://docs.mongodb.com/manual/tutorial/query-documents/
+I chose to have the users specify their criteria in a JSON object very strongly inspired by the syntax used to build queries in MongoDB: https://docs.mongodb.com/manual/tutorial/query-documents/
 
 And now I'm writing this library to evaluate an object againts these criteria.
 
