@@ -27,6 +27,15 @@ describe('evaluateMatch', () => {
         expect(evaluateMatch(item, query)).to.equal(false);
       });
     });
+    context('given a very simple query object and an item that has a circular structure', () => {
+      const query = { "key1": "value1" };
+      it('returns true if the item matches the query', () => {
+        const subItem = { key1: "subValue1"};
+        const item = { "key1": "value1", "key2": "value2", key3: subItem };
+        subItem.parent = item;
+        expect(evaluateMatch(item, query)).to.equal(true);
+      });
+    });
     context('given a simple query object and a valid item', () => {
       const query = { "key1": "value1", "key2": "value2" };
       it('returns true if the item matches the query', () => {

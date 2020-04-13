@@ -1,5 +1,6 @@
 const log4js = require('@log4js-node/log4js-api');
-const logger = log4js.getLogger('json-query-matcher.evaluateMatch');
+const logger = log4js.getLogger('json-query-matcher.recursiveEvaluateMatch');
+const { inspect } = require('util');
 
 // since there are circular dependencies, the export has to be first
 module.exports = recursiveEvaluateMatch;
@@ -17,8 +18,8 @@ const logicalEvaluationFunctionByLogicalOperator = require('./logicalEvaluationF
  * @returns {Boolean} true if item matches query, false otherwise
  */
 function recursiveEvaluateMatch(item, query) {
-  logger.trace(`item: ${JSON.stringify(item)}`);
-  logger.trace(`query: ${JSON.stringify(query)}`);
+  logger.trace(`item: ${inspect(item)}`);
+  logger.trace(`query: ${inspect(query)}`);
 
   if (typeof query !== `object`) return compareValues(item, query, "$eq");
 
