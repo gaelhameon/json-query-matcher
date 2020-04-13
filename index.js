@@ -1,4 +1,4 @@
-const recursiveEvaluateMatch = require(`./src/recursiveEvaluateMatch`);
+const recursiveEvaluateMatch = require('./src/recursiveEvaluateMatch');
 
 /**
  * Evaluates object againts query and returns the result

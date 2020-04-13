@@ -1,7 +1,7 @@
 const log4js = require('@log4js-node/log4js-api');
 const logger = log4js.getLogger('json-query-matcher.evaluateInOrNin');
 
-const compareValues = require(`./compareValues`);
+const compareValues = require('./compareValues');
 
 /**
  * Compares values using $in or $nin
