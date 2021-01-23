@@ -1,6 +1,6 @@
 {
   "name": "json-query-matcher",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Evaluates mongo-db style queries",
   "main": "index.js",
   "scripts": {
