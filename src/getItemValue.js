@@ -12,7 +12,7 @@ const _ = require('lodash');
  */
 function getItemValue(item, field) {
   const value = _.get(item, field);
-  logger.trace(`Got value ${inspect(value)} in field ${field} of item ${inspect(item)}`);
+  logger.trace(() => `Got value ${inspect(value)} in field ${field} of item ${inspect(item)}`);
   return value;
 }
 

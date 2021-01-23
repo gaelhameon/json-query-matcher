@@ -5,8 +5,8 @@ const { inspect } = require('util');
 const evaluateMatch = require('../recursiveEvaluateMatch');
 
 function evaluateNot(item, query) {
-    logger.trace(`item: ${inspect(item)}`);
-    logger.trace(`query: ${inspect(query)}`);
+    logger.trace(() => `item: ${inspect(item)}`);
+    logger.trace(() => `query: ${inspect(query)}`);
     return !evaluateMatch(item, query);
 }
 
