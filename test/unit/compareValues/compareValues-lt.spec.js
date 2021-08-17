@@ -1,63 +1,65 @@
 const { expect } = require('chai');
 
 const compareValues = require('../../../src/comparisonFunctions/compareValues');
+const Logger = require('../../../src/logger/ConsoleLogger');
+const logger = new Logger({level: 'off'});
 
 describe('compareValues - $gt operator', () => {
   context(`with two values of the same type`, () => {
     context(`with strings`, () => {
       it(`returns false if both are strictly equal`, () => {
-        expect(compareValues("Allo", "Allo", "$lt")).to.be.false;
-        expect(compareValues("", "", "$lt")).to.be.false;
-        expect(compareValues(`allo`, "allo", "$lt")).to.be.false;
-        expect(compareValues(`${'al'}${'lo'}`, "allo", "$lt")).to.be.false;
-        expect(compareValues(`${'al'}${'lo'}`, "a" + "llo", "$lt")).to.be.false;
-        expect(compareValues(`$gt`, `$gt`, "$lt")).to.be.false;
+        expect(compareValues("Allo", "Allo", "$lt", logger)).to.be.false;
+        expect(compareValues("", "", "$lt", logger)).to.be.false;
+        expect(compareValues(`allo`, "allo", "$lt", logger)).to.be.false;
+        expect(compareValues(`${'al'}${'lo'}`, "allo", "$lt", logger)).to.be.false;
+        expect(compareValues(`${'al'}${'lo'}`, "a" + "llo", "$lt", logger)).to.be.false;
+        expect(compareValues(`$gt`, `$gt`, "$lt", logger)).to.be.false;
       });
       it(`compares the strings using the lexicographical order`, () => {
-        expect(compareValues("Allo", "All", "$lt")).to.be.false;
-        expect(compareValues("Allo", "Alloah", "$lt")).to.be.true;
-        expect(compareValues("allo", "Allo", "$lt")).to.be.false;
-        expect(compareValues("Z", "A", "$lt")).to.be.false;
-        expect(compareValues("a", "Z", "$lt")).to.be.false;
-        expect(compareValues("2", "14", "$lt")).to.be.false;
+        expect(compareValues("Allo", "All", "$lt", logger)).to.be.false;
+        expect(compareValues("Allo", "Alloah", "$lt", logger)).to.be.true;
+        expect(compareValues("allo", "Allo", "$lt", logger)).to.be.false;
+        expect(compareValues("Z", "A", "$lt", logger)).to.be.false;
+        expect(compareValues("a", "Z", "$lt", logger)).to.be.false;
+        expect(compareValues("2", "14", "$lt", logger)).to.be.false;
       });
     });
     context(`with numbers`, () => {
       it(`returns false if both are equal`, () => {
-        expect(compareValues(0, 0, "$lt")).to.be.false;
-        expect(compareValues(0 + 2, 2, "$lt")).to.be.false;
-        expect(compareValues(2.5, 5 / 2, "$lt")).to.be.false;
-        expect(compareValues(2.500, 2.5, "$lt")).to.be.false;
-        expect(compareValues(2.000, 2, "$lt")).to.be.false;
-        expect(compareValues(Number.MAX_VALUE, Number.MAX_VALUE, "$lt")).to.be.false;
-        expect(compareValues(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, "$lt")).to.be.false;
-        expect(compareValues(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, "$lt")).to.be.false;
+        expect(compareValues(0, 0, "$lt", logger)).to.be.false;
+        expect(compareValues(0 + 2, 2, "$lt", logger)).to.be.false;
+        expect(compareValues(2.5, 5 / 2, "$lt", logger)).to.be.false;
+        expect(compareValues(2.500, 2.5, "$lt", logger)).to.be.false;
+        expect(compareValues(2.000, 2, "$lt", logger)).to.be.false;
+        expect(compareValues(Number.MAX_VALUE, Number.MAX_VALUE, "$lt", logger)).to.be.false;
+        expect(compareValues(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, "$lt", logger)).to.be.false;
+        expect(compareValues(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, "$lt", logger)).to.be.false;
       });
       it(`returns false if item value is greater than query value`, () => {
-        expect(compareValues(1, 0, "$lt")).to.be.false;
-        expect(compareValues(0, -1, "$lt")).to.be.false;
-        expect(compareValues(1.1, 1, "$lt")).to.be.false;
-        expect(compareValues(0.1, 0, "$lt")).to.be.false;
-        expect(compareValues(1 / 1000000000000000, 1 / 1000000000000001, "$lt")).to.be.false;
-        expect(compareValues(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, "$lt")).to.be.false;
-        expect(compareValues(Number.POSITIVE_INFINITY, Number.MAX_VALUE, "$lt")).to.be.false;
+        expect(compareValues(1, 0, "$lt", logger)).to.be.false;
+        expect(compareValues(0, -1, "$lt", logger)).to.be.false;
+        expect(compareValues(1.1, 1, "$lt", logger)).to.be.false;
+        expect(compareValues(0.1, 0, "$lt", logger)).to.be.false;
+        expect(compareValues(1 / 1000000000000000, 1 / 1000000000000001, "$lt", logger)).to.be.false;
+        expect(compareValues(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, "$lt", logger)).to.be.false;
+        expect(compareValues(Number.POSITIVE_INFINITY, Number.MAX_VALUE, "$lt", logger)).to.be.false;
       });
       it(`returns true if item value is strictly lower than query value`, () => {
-        expect(compareValues(0, 1, "$lt")).to.be.true;
-        expect(compareValues(0.1, 1.0, "$lt")).to.be.true;
-        expect(compareValues(0, 0.000000000000000000000000001, "$lt")).to.be.true;
-        expect(compareValues(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, "$lt")).to.be.true;
-        expect(compareValues(Number.MAX_VALUE, Number.POSITIVE_INFINITY, "$lt")).to.be.true;
+        expect(compareValues(0, 1, "$lt", logger)).to.be.true;
+        expect(compareValues(0.1, 1.0, "$lt", logger)).to.be.true;
+        expect(compareValues(0, 0.000000000000000000000000001, "$lt", logger)).to.be.true;
+        expect(compareValues(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, "$lt", logger)).to.be.true;
+        expect(compareValues(Number.MAX_VALUE, Number.POSITIVE_INFINITY, "$lt", logger)).to.be.true;
       });
     });
     context(`with booleans`, () => {
       it(`returns true if itemValue is false and queryValue is true`, () => {
-        expect(compareValues(false, true, "$lt")).to.be.true;
+        expect(compareValues(false, true, "$lt", logger)).to.be.true;
       });
       it(`returns false otherwise`, () => {
-        expect(compareValues(true, false, "$lt")).to.be.false;
-        expect(compareValues(false, false, "$lt")).to.be.false;
-        expect(compareValues(true, true, "$lt")).to.be.false;
+        expect(compareValues(true, false, "$lt", logger)).to.be.false;
+        expect(compareValues(false, false, "$lt", logger)).to.be.false;
+        expect(compareValues(true, true, "$lt", logger)).to.be.false;
       });
     });
     context(`with objects`, () => {
@@ -76,40 +78,40 @@ describe('compareValues - $gt operator', () => {
         const d = new MyObj(65);
         const e = new MyObj(75);
 
-        expect(compareValues(a, a, "$lt")).to.be.false;
-        expect(compareValues(a, b.a, "$lt")).to.be.false;
-        expect(compareValues(a, b, "$lt")).to.be.false;
-        expect(compareValues(a, c, "$lt")).to.be.false;
-        expect(compareValues(c, d, "$lt")).to.be.false;
-        expect(compareValues(e, d, "$lt")).to.be.false;
-        expect(compareValues(d, e, "$lt")).to.be.true;
-        expect(compareValues(e, 85, "$lt")).to.be.true;
+        expect(compareValues(a, a, "$lt", logger)).to.be.false;
+        expect(compareValues(a, b.a, "$lt", logger)).to.be.false;
+        expect(compareValues(a, b, "$lt", logger)).to.be.false;
+        expect(compareValues(a, c, "$lt", logger)).to.be.false;
+        expect(compareValues(c, d, "$lt", logger)).to.be.false;
+        expect(compareValues(e, d, "$lt", logger)).to.be.false;
+        expect(compareValues(d, e, "$lt", logger)).to.be.true;
+        expect(compareValues(e, 85, "$lt", logger)).to.be.true;
       });
     });
   });
   context(`with values of different types`, () => {
     it(`does what it wants ...`, () => {
-      expect(compareValues("1", 1, "$lt")).to.be.false;
-      expect(compareValues(1, "1", "$lt")).to.be.false;
+      expect(compareValues("1", 1, "$lt", logger)).to.be.false;
+      expect(compareValues(1, "1", "$lt", logger)).to.be.false;
 
-      expect(compareValues("false", false, "$lt")).to.be.false;
-      expect(compareValues(false, "false", "$lt")).to.be.false;
+      expect(compareValues("false", false, "$lt", logger)).to.be.false;
+      expect(compareValues(false, "false", "$lt", logger)).to.be.false;
 
-      expect(compareValues("", null, "$lt")).to.be.false;
-      expect(compareValues(null, "", "$lt")).to.be.false;
+      expect(compareValues("", null, "$lt", logger)).to.be.false;
+      expect(compareValues(null, "", "$lt", logger)).to.be.false;
 
 
-      expect(compareValues("", undefined, "$lt")).to.be.false;
-      expect(compareValues(undefined, "", "$lt")).to.be.false;
+      expect(compareValues("", undefined, "$lt", logger)).to.be.false;
+      expect(compareValues(undefined, "", "$lt", logger)).to.be.false;
 
-      expect(compareValues("", 0, "$lt")).to.be.false;
-      expect(compareValues(0, "", "$lt")).to.be.false;
+      expect(compareValues("", 0, "$lt", logger)).to.be.false;
+      expect(compareValues(0, "", "$lt", logger)).to.be.false;
 
-      expect(compareValues("", true, "$lt")).to.be.true;
-      expect(compareValues(true, "", "$lt")).to.be.false;
+      expect(compareValues("", true, "$lt", logger)).to.be.true;
+      expect(compareValues(true, "", "$lt", logger)).to.be.false;
 
-      expect(compareValues(85, "75", "$lt")).to.be.false;
-      expect(compareValues(65, "75", "$lt")).to.be.true;
+      expect(compareValues(85, "75", "$lt", logger)).to.be.false;
+      expect(compareValues(65, "75", "$lt", logger)).to.be.true;
     });
   });
 });

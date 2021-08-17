@@ -1,7 +1,3 @@
-const log4js = require('@log4js-node/log4js-api');
-const logger = log4js.getLogger('json-query-matcher.compareValues');
-
-
 /**
  * Compares values
  * @param {Any} itemValue the value in the item
@@ -9,7 +5,8 @@ const logger = log4js.getLogger('json-query-matcher.compareValues');
  * @param {('$eq'|'$ne'|'$gt'|'$gte'|'$lt'|'$lte')} operator comparison operator
  * @returns {Boolean} the result of the comparison
  */
-function compareValues(itemValue, queryValue, operator = "$eq") {
+function compareValues(itemValue, queryValue, operator, parentLogger) {
+    const logger = parentLogger.getChildLogger('compareValues');
     logger.trace(`Comparing itemValue ${itemValue} with queryValue ${queryValue} using ${operator}`);
     switch (operator) {
         case "$eq":

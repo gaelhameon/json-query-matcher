@@ -4,9 +4,9 @@
   "description": "Evaluates mongo-db style queries",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive --file test/setup-logger.js test/**/*.spec.js",
-    "test:feature": "mocha --recursive --file test/setup-logger.js test/feature/**/*.spec.js",
-    "test:unit": "mocha --recursive --file test/setup-logger.js test/unit/**/*.spec.js",
+    "test": "mocha --recursive test/**/*.spec.js",
+    "test:feature": "mocha --recursive test/feature/**/*.spec.js",
+    "test:unit": "mocha --recursive test/unit/**/*.spec.js",
     "coverage": "nyc --reporter=html --reporter=text npm test",
     "coverage:feature": "nyc --reporter=html --reporter=text npm run test:feature",
     "coverage:unit": "nyc --reporter=html --reporter=text npm run test:unit"
@@ -29,12 +29,10 @@
   "homepage": "https://github.com/gaelhameon/json-query-matcher#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "log4js": "^6.1.2",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1"
   },
   "dependencies": {
-    "@log4js-node/log4js-api": "^1.0.2",
     "lodash": "^4.17.15"
   }
 }

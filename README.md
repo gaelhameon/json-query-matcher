@@ -9,7 +9,7 @@ The criteria used to select these subsets can vary greatly depending on the use 
 
 I chose to have the users specify their criteria in a JSON object very strongly inspired by the syntax used to build queries in MongoDB: https://docs.mongodb.com/manual/tutorial/query-documents/
 
-And now I'm writing this library to evaluate an object againts these criteria.
+And now I'm writing this library to evaluate an object against these criteria.
 
 ## Installation
     npm install --save json-query-matcher

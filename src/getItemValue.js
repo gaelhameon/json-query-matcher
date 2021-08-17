@@ -1,5 +1,3 @@
-const log4js = require('@log4js-node/log4js-api');
-const logger = log4js.getLogger('json-query-matcher.getItemValue');
 const { inspect } = require('util');
 
 const _ = require('lodash');
@@ -10,7 +8,8 @@ const _ = require('lodash');
  * @param {string} field path to the field in the object
  * @returns {Any} the value of field in item. Undefined if not found.
  */
-function getItemValue(item, field) {
+function getItemValue(item, field, parentLogger) {
+  const logger = parentLogger.getChildLogger('getItemValue');
   const value = _.get(item, field);
   logger.trace(() => `Got value ${inspect(value)} in field ${field} of item ${inspect(item)}`);
   return value;
