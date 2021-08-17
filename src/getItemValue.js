@@ -1,6 +1,6 @@
 const { inspect } = require('util');
 
-const _ = require('lodash');
+const get = require('lodash/get');
 
 /**
  * Gets the value of field in item and returns it
@@ -10,7 +10,7 @@ const _ = require('lodash');
  */
 function getItemValue(item, field, parentLogger) {
   const logger = parentLogger.getChildLogger('getItemValue');
-  const value = _.get(item, field);
+  const value = get(item, field);
   logger.trace(() => `Got value ${inspect(value)} in field ${field} of item ${inspect(item)}`);
   return value;
 }
