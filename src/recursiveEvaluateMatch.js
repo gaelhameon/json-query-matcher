@@ -7,7 +7,7 @@ const getItemValue = require('./getItemValue');
 const compareValues = require('./comparisonFunctions/compareValues');
 const compareValuesFunctionByComparisonOperator = require('./comparisonFunctionByComparisonOperator');
 const logicalEvaluationFunctionByLogicalOperator = require('./logicalEvaluationFunctionByLogicalOperator');
-
+const evaluationFunctionByArrayOperator = require('./evaluationFunctionByArrayOperator');
 
 /**
  * Recursively evaluates item against query. Returns true if item matches query, false otherwise.
@@ -16,12 +16,14 @@ const logicalEvaluationFunctionByLogicalOperator = require('./logicalEvaluationF
  * @param {Any} logger a logger
  * @returns {Boolean} true if item matches query, false otherwise
  */
-function recursiveEvaluateMatch(item, query, rootLogger) {
+function recursiveEvaluateMatch(itemOrArray, query, rootLogger) {
   const logger = rootLogger.getChildLogger('recursiveEvaluateMatch');
-  logger.trace(() => `item: ${inspect(item)}`);
+  logger.trace(() => `item: ${inspect(itemOrArray)}`);
   logger.trace(() => `query: ${inspect(query)}`);
 
-  if (typeof query !== `object`) return compareValues(item, query, "$eq", rootLogger);
+  const arrayOfItems = Array.isArray(itemOrArray) ? itemOrArray : [itemOrArray];
+
+  if (typeof query !== `object`) return arrayOfItems.some((item) => compareValues(item, query, "$eq", rootLogger));
 
   const queryKeys = Object.keys(query);
   if (queryKeys.length === 0) throw new Error(`Query should have at least one key`);
@@ -30,19 +32,25 @@ function recursiveEvaluateMatch(item, query, rootLogger) {
     const queryValue = query[queryKey];
     logger.trace(`Evaluating key ${queryKey} with value: ${queryValue}`);
 
+    const arrayOperatorEvaluationFunction = evaluationFunctionByArrayOperator[queryKey];
+    if (arrayOperatorEvaluationFunction) {
+      logger.trace(`Array operator ${queryKey} detected. Will use function ${arrayOperatorEvaluationFunction.name}`);
+      return  arrayOperatorEvaluationFunction(arrayOfItems, queryValue, queryKey, rootLogger);
+    }
+
     const compareValuesFunction = compareValuesFunctionByComparisonOperator[queryKey];
     if (compareValuesFunction) {
       logger.trace(`Comparison operator ${queryKey} detected. Will use function ${compareValuesFunction.name}`);
-      return compareValuesFunction(item, queryValue, queryKey, rootLogger);
+      return arrayOfItems.some((item) => compareValuesFunction(item, queryValue, queryKey, rootLogger));
     }
 
     const logicalEvaluationFunction = logicalEvaluationFunctionByLogicalOperator[queryKey];
     if (logicalEvaluationFunction) {
       logger.trace(`Logical operator ${queryKey} detected. Will use function ${logicalEvaluationFunction.name}`);
-      return logicalEvaluationFunction(item, queryValue, rootLogger);
+      return arrayOfItems.some((item) => logicalEvaluationFunction(item, queryValue, rootLogger));
     }
 
     logger.trace(`No operator detected. Will evaluate match.`);
-    return recursiveEvaluateMatch(getItemValue(item, queryKey, rootLogger), query[queryKey], rootLogger)
+    return arrayOfItems.some((item) => recursiveEvaluateMatch(getItemValue(item, queryKey, rootLogger), query[queryKey], rootLogger));
   });
 }

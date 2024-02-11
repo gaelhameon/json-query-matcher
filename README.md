@@ -69,8 +69,89 @@ These 4 logical operators are available and are meant to behave the [same way as
 - `$nor` 
 - `$not` 
 
+#### Array operators
+MongoDB has [3 array operators](https://docs.mongodb.com/manual/reference/operator/query-array/): 
+- `$elemMatch`
+- `$all`
+- `$size`
+
+As of now, only the `$elemMatch` operator is implemented. See the Arrays section below.
+
 #### Other operators
-I plan on adding operators as I need them. Up next are probably the [array operators](https://docs.mongodb.com/manual/reference/operator/query-array/)
+I plan on adding operators as I need them. Up next are probably the missing [array operators](https://docs.mongodb.com/manual/reference/operator/query-array/)
+
+
+### Arrays
+
+#### Simple queries on arrays of values
+
+When the property that is targeted by a query is an array, the query will be considered valid as soon as one of the objects in the array matches it.
+
+```javascript
+const item = {
+  firstName: "Gaël",
+  lastName: "Haméon",
+  nickNames: ["Gaga", "Galinou"],
+};
+
+const query1 = { nickNames: "Gaga" };
+const result1 = evaluateMatch(item, query1);
+expect(result1).to.eql(true);
+
+const query2 = { nickNames: { $in: ["Galinou", "Alixou"] } };
+const result2 = evaluateMatch(item, query2);
+expect(result2).to.eql(true);
+```
+
+#### Compound queries on arrays of objects - use of $elemMatch operator
+
+If the targeted array contains objects and the query is compound, the query will be considered valid as soon as each part of the query, taken separately, is valid for at least one of the objects in the array. 
+
+```javascript
+const item = {
+  firstName: "Gaël",
+  lastName: "Haméon",
+  pets: [
+    {
+      name: "César",
+      species: "Dog"
+    },
+    {
+      name: "Capsule",
+      species: "Cat"
+    }
+  ]
+};
+
+const query1 = { pets: {"name": "César", "species": "Cat"} };
+const result1 = evaluateMatch(item, query1);
+expect(result1).to.eql(true);
+```
+In the example above, the query could be translated as "Check if among the pets of this person, at least one is named César, and at least one is a Cat".
+
+If you want to check if the person has a Cat named César, you have to use the `$elemMatch` operator:
+
+```javascript
+const item = {
+  firstName: "Gaël",
+  lastName: "Haméon",
+  pets: [
+    {
+      name: "César",
+      species: "Dog"
+    },
+    {
+      name: "Capsule",
+      species: "Cat"
+    }
+  ]
+};
+
+const query1 = { pets: { $elemMatch: {"name": "César", "species": "Cat"} } };
+const result1 = evaluateMatch(item, query1);
+expect(result1).to.eql(false);
+```
+
 
 ### Dot notation
 [Like in MongoDB](https://docs.mongodb.com/manual/core/document/#dot-notation), you can use the dot notation to access deeper properties in an object.

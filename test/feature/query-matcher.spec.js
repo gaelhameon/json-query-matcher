@@ -2,6 +2,9 @@ const { expect } = require('chai');
 
 const { evaluateMatch } = require('../../index');
 
+const Logger = require('../../src/logger/ConsoleLogger');
+const logger = new Logger({level: 'off'});
+
 describe('evaluateMatch', () => {
   context('given a valid query object', () => {
     context('given a very simple query object and a valid item', () => {
@@ -57,6 +60,39 @@ describe('evaluateMatch', () => {
       it('returns false if the item has undefined keys not match the query', () => {
         const item = { "key2": "toto" };
         expect(evaluateMatch(item, query)).to.equal(false);
+      });
+    });
+    context('given a simple query object that queries an array in the item', () => {
+      const query = { "key1": "value1" };
+      it('returns true if at least one value of the array matches the query', () => {
+        const item = { "key1": ["value1"], "key2": "value2", key3: "value3" };
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
+      });
+    });
+    context('given a compound query object that queries an array in the item', () => {
+      const query = { "key1": {"subKey1": "val1", "subKey2": "val2"} };
+      it('returns true if a combination of the values of the array matches the query', () => {
+        const item = { "key1": [
+          {"subKey1": "val0", "subKey2": "val2", "subKey3": "val3"},
+          {"subKey1": "val1", "subKey2": "val0", "subKey3": "val3"},
+        ], "key2": "value2", key3: "value3" };
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
+      });
+    });
+    context('given a query object that use $elemMatch to query an array in the item', () => {
+      const query = { "key1": { $elemMatch: {"subKey1": "val1", "subKey2": "val2"}} };
+      it('returns true if at least one of the elements of array matches all parts of the query', () => {
+        const item1 = { "key1": [
+          {"subKey1": "val0", "subKey2": "val2", "subKey3": "val3"},
+          {"subKey1": "val1", "subKey2": "val0", "subKey3": "val3"},
+        ], "key2": "value2", key3: "value3" };
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+
+        const item2 = { "key1": [
+          {"subKey1": "val1", "subKey2": "val2", "subKey3": "val3"},
+          {"subKey1": "val1", "subKey2": "val0", "subKey3": "val3"},
+        ], "key2": "value2", key3: "value3" };
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
     });
     context('given a deep query object and a valid item', () => {
