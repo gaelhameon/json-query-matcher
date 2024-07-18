@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.2.1](https://github.com/gaelhameon/json-query-matcher/compare/v1.2.0...v1.0.3) (2024-07-18)
+## [1.2.1](https://github.com/gaelhameon/json-query-matcher/compare/v1.2.0...v1.2.1) (2024-07-18)
 
 
 ### Dependencies maintenance
