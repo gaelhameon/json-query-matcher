@@ -42,7 +42,7 @@ class ConsoleLogger {
      * Shortcut for contexts where you don't have the logging framework
      * Doesn't make sense here but kept to have same interface as other projects
      * @param {String} category - Category for the new logger
-     * @param {String} level - Category for the new logger
+     * @param {String} level - Level for the new logger
      * @returns {ConsoleLogger}
      */
   getRootLogger(category, level) {
