@@ -52,7 +52,7 @@ class ConsoleLogger {
   set level(newLevel) {
     const levelInfo = levelInfoByLevelKey[newLevel];
     if (!levelInfo) {
-      throw new Error(`Unknown level ${newLevel}`);
+      throw new Error(`Unknown level "${newLevel}"`);
     }
     this._level = newLevel;
     this._levelValue = levelInfo.value;
@@ -65,7 +65,7 @@ class ConsoleLogger {
   log(level, message) {
     const levelInfo = levelInfoByLevelKey[level];
     if (!levelInfo) {
-      throw new Error(`Unknown level ${level}`);
+      throw new Error(`Unknown level "${level}"`);
     }
     if (levelInfo.value < this._levelValue) return;
     console.log(`${this.category} - ${level}: ${typeof message === 'function' ? message() : message}`);
