@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const evaluateInOrNin = require('../../../src/comparisonFunctions/evaluateInOrNin');
 const Logger = require('../../../src/logger/ConsoleLogger');
-const logger = new Logger({level: 'off'});
+const logger = new Logger({level: 'trace'});
 
 describe('evaluateInOrNin - $in operator', () => {
   it(`returns true if item value is included in query values`, () => {

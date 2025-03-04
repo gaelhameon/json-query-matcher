@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const { evaluateMatch } = require('../../index');
 
 const Logger = require('../../src/logger/ConsoleLogger');
-const logger = new Logger({level: 'off'});
+const logger = new Logger({level: 'trace'});
 
 describe('evaluateMatch', () => {
   context('given a valid query object', () => {
@@ -11,23 +11,23 @@ describe('evaluateMatch', () => {
       const query = { "key1": "value1" };
       it('returns true if the item matches the query', () => {
         const item = { "key1": "value1", "key2": "value2", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns true if the item matches the query', () => {
         const item = { key1: "value1", "key2": "value2", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = { "key1": "otherValue", "key2": "value2", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
       it('returns false if the item is empty', () => {
         const item = {};
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
       it('returns false if the item has undefined keys not match the query', () => {
         const item = { "key2": "toto" };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a very simple query object and an item that has a circular structure', () => {
@@ -36,30 +36,30 @@ describe('evaluateMatch', () => {
         const subItem = { key1: "subValue1"};
         const item = { "key1": "value1", "key2": "value2", key3: subItem };
         subItem.parent = item;
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
     });
     context('given a simple query object and a valid item', () => {
       const query = { "key1": "value1", "key2": "value2" };
       it('returns true if the item matches the query', () => {
         const item = { "key1": "value1", "key2": "value2", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = { "key1": "otherValue", "key2": "value2", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
       it('returns false if the item does not match the query', () => {
         const item = { "key1": "value1", "key2": "badValue", key3: "value3" };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
       it('returns false if the item is empty', () => {
         const item = {};
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
       it('returns false if the item has undefined keys not match the query', () => {
         const item = { "key2": "toto" };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a simple query object that queries an array in the item', () => {
@@ -106,7 +106,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = {
@@ -117,7 +117,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "NAF2"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a query object with a $ne and a valid item', () => {
@@ -132,9 +132,9 @@ describe('evaluateMatch', () => {
           firstTripPoint: {}
         };
         const item3 = {}
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = {
@@ -142,7 +142,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR1",
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a query object with a $ne and other fields and a valid item', () => {
@@ -160,8 +160,8 @@ describe('evaluateMatch', () => {
         const item2 = {
           firstTripPoint: { trpptNoStopping: "1" }
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -176,9 +176,9 @@ describe('evaluateMatch', () => {
           }
         };
         const item3 = {}
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
-        expect(evaluateMatch(item3, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
+        expect(evaluateMatch(item3, query, logger)).to.equal(false);
       });
     });
     context('given a query object with $or at the root and a valid item', () => {
@@ -192,7 +192,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "NAF1"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns true if the item matches the query', () => {
         const item = {
@@ -203,7 +203,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(true);
+        expect(evaluateMatch(item, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = {
@@ -214,7 +214,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "NAF1C"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a query object with $or not at the root and a valid item', () => {
@@ -230,8 +230,8 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2",
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item = {
@@ -242,7 +242,7 @@ describe('evaluateMatch', () => {
             trpptPlace: "NAF1C"
           }
         };
-        expect(evaluateMatch(item, query)).to.equal(false);
+        expect(evaluateMatch(item, query, logger)).to.equal(false);
       });
     });
     context('given a query object with multiple nested ors and a valid item', () => {
@@ -282,10 +282,10 @@ describe('evaluateMatch', () => {
             trpptNoStopping: "0"
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
-        expect(evaluateMatch(item4, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
+        expect(evaluateMatch(item4, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -302,8 +302,8 @@ describe('evaluateMatch', () => {
             trpptNoStopping: "1"
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
       });
     });
     context('given a query object with multiple nested ors and some $gt/$lt and a valid item', () => {
@@ -352,11 +352,11 @@ describe('evaluateMatch', () => {
             trpptRank: 2
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
-        expect(evaluateMatch(item4, query)).to.equal(true);
-        expect(evaluateMatch(item5, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
+        expect(evaluateMatch(item4, query, logger)).to.equal(true);
+        expect(evaluateMatch(item5, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -393,11 +393,11 @@ describe('evaluateMatch', () => {
             trpptNoStopping: "0",
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
-        expect(evaluateMatch(item3, query)).to.equal(false);
-        expect(evaluateMatch(item4, query)).to.equal(false);
-        expect(evaluateMatch(item5, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
+        expect(evaluateMatch(item3, query, logger)).to.equal(false);
+        expect(evaluateMatch(item4, query, logger)).to.equal(false);
+        expect(evaluateMatch(item5, query, logger)).to.equal(false);
       });
     });
     context('given a query object with some $and and some $gt/$lt and a valid item', () => {
@@ -423,9 +423,9 @@ describe('evaluateMatch', () => {
           trpDistance: 300,
           trpNumberOfPoints: 8
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -438,8 +438,8 @@ describe('evaluateMatch', () => {
           trpDistance: 500,
           trpNumberOfPoints: 2
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
       });
     });
     context('given a query object with a normal key and a or on the same level, and a valid item', () => {
@@ -478,9 +478,9 @@ describe('evaluateMatch', () => {
             trpptNoStopping: "1",
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -506,9 +506,9 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2",
           },
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
-        expect(evaluateMatch(item3, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
+        expect(evaluateMatch(item3, query, logger)).to.equal(false);
       });
     });
     context('given a query object with $in, and a valid item', () => {
@@ -526,8 +526,8 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2",
           }
         };
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -536,8 +536,8 @@ describe('evaluateMatch', () => {
           }
         };
         const item2 = {};
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
       });
     });
     context('given a query object with $nin, and a valid item', () => {
@@ -555,8 +555,8 @@ describe('evaluateMatch', () => {
             trpptPlace: "SXR2",
           }
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
       });
       it('returns true if the item matches the query', () => {
         const item1 = {
@@ -565,8 +565,8 @@ describe('evaluateMatch', () => {
           }
         };
         const item2 = {};
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
     });
     context('given a query object with $not, and a valid item', () => {
@@ -578,14 +578,14 @@ describe('evaluateMatch', () => {
           trpDistance: 200
         };
         const item2 = {};
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
           trpDistance: 400
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
       });
     });
     context('given a query object with $nor, and a valid item', () => {
@@ -607,10 +607,10 @@ describe('evaluateMatch', () => {
           trpNumber: `234567`,
         };
         const item4 = {};
-        expect(evaluateMatch(item1, query)).to.equal(true);
-        expect(evaluateMatch(item2, query)).to.equal(true);
-        expect(evaluateMatch(item3, query)).to.equal(true);
-        expect(evaluateMatch(item4, query)).to.equal(true);
+        expect(evaluateMatch(item1, query, logger)).to.equal(true);
+        expect(evaluateMatch(item2, query, logger)).to.equal(true);
+        expect(evaluateMatch(item3, query, logger)).to.equal(true);
+        expect(evaluateMatch(item4, query, logger)).to.equal(true);
       });
       it('returns false if the item does not match the query', () => {
         const item1 = {
@@ -623,9 +623,9 @@ describe('evaluateMatch', () => {
           trpNumber: `123456`,
           trpType: `0`
         };
-        expect(evaluateMatch(item1, query)).to.equal(false);
-        expect(evaluateMatch(item2, query)).to.equal(false);
-        expect(evaluateMatch(item3, query)).to.equal(false);
+        expect(evaluateMatch(item1, query, logger)).to.equal(false);
+        expect(evaluateMatch(item2, query, logger)).to.equal(false);
+        expect(evaluateMatch(item3, query, logger)).to.equal(false);
       });
     });
   });
